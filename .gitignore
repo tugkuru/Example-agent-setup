@@ -1,0 +1,15 @@
+# Personal agent settings and instructions
+.claude/settings.local.json
+CLAUDE.local.md
+
+# Agent state created locally
+.claude/agent-memory/
+.agents/plans/
+
+# opencode plugin dependencies
+.opencode/node_modules/
+
+# Editor and OS files
+.idea/
+*.iml
+.DS_Store
