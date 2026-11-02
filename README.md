@@ -175,9 +175,6 @@ has no built-in subagents and no MCP, and it hooks in through TypeScript extensi
 - **Ask for project agents explicitly.** The extension loads `.pi/agents/` only when the call passes
   `agentScope: "both"`. `/review` does this; for other delegations, say so ("use the planner subagent with
   agentScope both").
-- **Without the extension,** turn each agent into a skill: move `.pi/agents/<name>.md` to
-  `.pi/skills/<name>/SKILL.md`, remove `tools` and `model`, and change `.pi/prompts/review.md` to load the
-  `code-reviewer` skill. The agents then run in the main context on the session's model.
 - **Models:** the pi agents name `claude-opus-5-5` and `claude-sonnet-5-5`. Change `model:` for other providers or
   remove it to use the session's model.
 - **Known gaps:** pi also reads `CLAUDE.md`, so `AGENTS.md` may load twice. Commands you run yourself with `!` do
