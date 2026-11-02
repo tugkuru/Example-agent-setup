@@ -41,7 +41,8 @@ Use it to see how the pieces fit together, or copy the parts you need into your 
 │   │   └── safety-gate.sh            # Before tool call: blocks dangerous commands and secret access
 │   ├── skills/                       # Shared skills, used by all tools
 │   │   ├── test-generation-skill/    # Test-writing rules, loaded when the task matches
-│   │   └── grilling/                 # Stress-tests a plan or idea in rounds of questions
+│   │   ├── grilling/                 # Stress-tests a plan or idea in rounds of questions
+│   │   └── code-walkthrough/         # Walks through code file by file, narrated or Socratic
 │   ├── agents/                       # Claude Code subagents
 │   │   ├── planner.md                # Plans work, writes no code
 │   │   ├── code-reviewer.md          # Reviews the diff, findings by severity
@@ -54,7 +55,8 @@ Use it to see how the pieces fit together, or copy the parts you need into your 
 │   ├── agents/                       # opencode versions of the three subagents
 │   └── commands/
 │       ├── review.md                 # /review [focus] launches the code-reviewer
-│       └── grilling.md               # /grilling [topic] loads the grilling skill
+│       ├── grilling.md               # /grilling [topic] loads the grilling skill
+│       └── code-walkthrough.md       # /code-walkthrough [topic] loads the code-walkthrough skill
 ├── .pi/
 │   ├── settings.json                 # pi: points to the shared skills in .claude/skills/
 │   ├── extensions/
