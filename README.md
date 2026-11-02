@@ -65,7 +65,10 @@ Use it to see how the pieces fit together, or copy the parts you need into your 
 │   │   └── hooks.ts                  # Runs the shared safety gate for pi
 │   ├── agents/                       # pi versions of the three subagents
 │   └── prompts/
-│       └── review.md                 # /review [focus] launches the code-reviewer
+│       ├── review.md                 # /review [focus] launches the code-reviewer
+│       ├── grilling.md               # /grilling [topic] loads the grilling skill
+│       ├── code-walkthrough.md       # /code-walkthrough [topic] loads the code-walkthrough skill
+│       └── focused-responses.md      # /focused-responses loads the focused-responses skill
 └── opencode.json                     # opencode: MCP servers
 ```
 
