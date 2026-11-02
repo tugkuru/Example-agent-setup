@@ -39,9 +39,9 @@ Use it to see how the pieces fit together, or copy the parts you need into your 
 │   ├── settings.local.json.example   # Claude Code: sample personal permission allowlist
 │   ├── hooks/
 │   │   └── safety-gate.sh            # Before tool call: blocks dangerous commands and secret access
-│   ├── skills/
-│   │   └── test-generation-skill/
-│   │       └── SKILL.md              # Test-writing rules, loaded when the task matches (all tools)
+│   ├── skills/                       # Shared skills, used by all tools
+│   │   ├── test-generation-skill/    # Test-writing rules, loaded when the task matches
+│   │   └── grilling/                 # Stress-tests a plan or idea in rounds of questions
 │   ├── agents/                       # Claude Code subagents
 │   │   ├── planner.md                # Plans work, writes no code
 │   │   ├── code-reviewer.md          # Reviews the diff, findings by severity
@@ -53,7 +53,8 @@ Use it to see how the pieces fit together, or copy the parts you need into your 
 │   │   └── hooks.ts                  # Runs the shared safety gate for opencode
 │   ├── agents/                       # opencode versions of the three subagents
 │   └── commands/
-│       └── review.md                 # /review [focus] launches the code-reviewer
+│       ├── review.md                 # /review [focus] launches the code-reviewer
+│       └── grilling.md               # /grilling [topic] loads the grilling skill
 ├── .pi/
 │   ├── settings.json                 # pi: points to the shared skills in .claude/skills/
 │   ├── extensions/
