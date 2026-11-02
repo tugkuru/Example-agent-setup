@@ -42,7 +42,8 @@ Use it to see how the pieces fit together, or copy the parts you need into your 
 │   ├── skills/                       # Shared skills, used by all tools
 │   │   ├── test-generation-skill/    # Test-writing rules, loaded when the task matches
 │   │   ├── grilling/                 # Stress-tests a plan or idea in rounds of questions
-│   │   └── code-walkthrough/         # Walks through code file by file, narrated or Socratic
+│   │   ├── code-walkthrough/         # Walks through code file by file, narrated or Socratic
+│   │   └── focused-responses/        # Short, structured answers; started only by hand
 │   ├── agents/                       # Claude Code subagents
 │   │   ├── planner.md                # Plans work, writes no code
 │   │   ├── code-reviewer.md          # Reviews the diff, findings by severity
@@ -56,7 +57,8 @@ Use it to see how the pieces fit together, or copy the parts you need into your 
 │   └── commands/
 │       ├── review.md                 # /review [focus] launches the code-reviewer
 │       ├── grilling.md               # /grilling [topic] loads the grilling skill
-│       └── code-walkthrough.md       # /code-walkthrough [topic] loads the code-walkthrough skill
+│       ├── code-walkthrough.md       # /code-walkthrough [topic] loads the code-walkthrough skill
+│       └── focused-responses.md      # /focused-responses loads the focused-responses skill
 ├── .pi/
 │   ├── settings.json                 # pi: points to the shared skills in .claude/skills/
 │   ├── extensions/
