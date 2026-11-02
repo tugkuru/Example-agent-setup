@@ -38,7 +38,9 @@ export const SafetyGate: Plugin = async ({ directory, worktree }) => {
       encoding: "utf8",
     })
     if (result.error) throw new Error(`safety-gate could not run: ${result.error.message}`)
-    if (result.status === 2) throw new Error(result.stderr.trim())
+    if (result.status === 2) throw new Error(result.stderr.trim() || "Blocked by safety-gate.")
+    // Fail closed: a missing script or a crash must not let the call through.
+    if (result.status !== 0) throw new Error(`safety-gate failed (status ${result.status}, signal ${result.signal})`)
   }
 
   return {
