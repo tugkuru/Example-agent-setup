@@ -12,9 +12,9 @@ Use it to see how the pieces fit together, or copy the parts you need into your 
 |--------------|-------------------------------------------------------------------------------------|------------------------------------|-----------------------------------------------|
 | Guidelines   | Project instructions: overview, hard stops, working rules. Keep them short.         | Always, loaded at session start    | `AGENTS.md`, `CLAUDE.md`                      |
 | Context docs | Glossary and architecture, mentioned in `AGENTS.md` instead of imported.            | On demand, when the task needs them | `docs/`                                       |
-| Skills       | Task-specific knowledge. Only the description is loaded up front.                   | When a task matches the description | `.claude/skills/<name>/SKILL.md`             |
+| Skills       | Task-specific knowledge. Only the description is loaded up front.                   | When a task matches the description | `.claude/skills/`, `.pi/skills/`             |
 | Commands     | Reusable prompts triggered with `/name`, optionally with arguments.                 | When the user types the command    | `.claude/commands/`, `.opencode/commands/`, `.pi/prompts/` |
-| Hooks        | Scripts that run before or after tool calls, no matter what the model decides.      | On every matching tool call        | `.claude/hooks/` + per-tool wiring            |
+| Hooks        | Scripts that run before or after tool calls, no matter what the model decides.      | On every matching tool call        | `.claude/hooks/`, `.pi/hooks/` + per-tool wiring |
 | Agents       | Subagents with their own context, model and tools. They return only the result.     | When work is delegated to them     | `.claude/agents/`, `.opencode/agents/`, `.pi/agents/` |
 
 ### Skill or agent?
@@ -39,7 +39,7 @@ Use it to see how the pieces fit together, or copy the parts you need into your 
 │   ├── settings.local.json.example   # Claude Code: sample personal permission allowlist
 │   ├── hooks/
 │   │   └── safety-gate.sh            # Before tool call: blocks dangerous commands and secret access
-│   ├── skills/                       # Shared skills, used by all tools
+│   ├── skills/                       # Skills for Claude Code and opencode
 │   │   ├── test-generation-skill/    # Test-writing rules, loaded when the task matches
 │   │   ├── grilling/                 # Stress-tests a plan or idea in rounds of questions
 │   │   ├── code-walkthrough/         # Walks through code file by file, narrated or Socratic
@@ -60,9 +60,13 @@ Use it to see how the pieces fit together, or copy the parts you need into your 
 │       ├── code-walkthrough.md       # /code-walkthrough [topic] loads the code-walkthrough skill
 │       └── focused-responses.md      # /focused-responses loads the focused-responses skill
 ├── .pi/
-│   ├── settings.json                 # pi: points to the shared skills in .claude/skills/
+│   ├── README.md                     # pi-specific setup instructions
+│   ├── settings.json                 # Optional pi project overrides
+│   ├── hooks/
+│   │   └── safety-gate.sh            # Local copy; no .claude/ dependency
+│   ├── skills/                       # Local copies of the four skills
 │   ├── extensions/
-│   │   └── hooks.ts                  # Runs the shared safety gate for pi
+│   │   └── hooks.ts                  # Runs the local safety gate for pi
 │   ├── agents/                       # pi versions of the three subagents
 │   └── prompts/
 │       ├── review.md                 # /review [focus] launches the code-reviewer
@@ -74,17 +78,18 @@ Use it to see how the pieces fit together, or copy the parts you need into your 
 
 ## Tool support
 
-Shared content is written once. opencode and pi get their own file only where they can't read the shared one.
+Claude Code and opencode share hooks and skills. pi deliberately includes its own copies so `.pi/` can be
+adopted without the other tool folders. Shared rule changes must be applied to both copies manually.
 
 | Block        | Claude Code                         | opencode                          | pi                                     |
 |--------------|-------------------------------------|-----------------------------------|----------------------------------------|
 | Guidelines   | `CLAUDE.md` → `@AGENTS.md`          | `AGENTS.md`                       | `AGENTS.md`                            |
 | Context docs | mentioned in `AGENTS.md`            | mentioned in `AGENTS.md`          | mentioned in `AGENTS.md`               |
-| Skills       | `.claude/skills/`                   | `.claude/skills/` (native)        | `.pi/settings.json` → `.claude/skills/` |
+| Skills       | `.claude/skills/`                   | `.claude/skills/` (native)        | `.pi/skills/` (native)                 |
 | Commands     | `.claude/commands/`                 | `.opencode/commands/`             | `.pi/prompts/`                         |
-| Hooks        | `.claude/settings.json` → scripts   | `.opencode/plugins/` → scripts    | `.pi/extensions/hooks.ts` → scripts    |
+| Hooks        | `.claude/settings.json` → scripts   | `.opencode/plugins/` → scripts    | `.pi/extensions/hooks.ts` → `.pi/hooks/` |
 | Agents       | `.claude/agents/`                   | `.opencode/agents/`               | `.pi/agents/` + subagent extension     |
-| MCP          | `mcpServers` in agent frontmatter   | `opencode.json`                   | — (`tech-research` uses `curl`)        |
+| MCP          | `mcpServers` in agent frontmatter   | `opencode.json`                   | Not configured (`tech-research` uses `curl`) |
 
 ### MCP servers and models
 
@@ -102,7 +107,7 @@ Shared content is written once. opencode and pi get their own file only where th
 All three tools define an agent as a Markdown file: YAML frontmatter on top, the system prompt below. The body can
 stay the same; the frontmatter can't, so each tool gets its own file. pi has no built-in subagents; the column
 describes its [subagent example extension](https://github.com/earendil-works/pi/tree/main/packages/coding-agent/examples/extensions/subagent),
-which each user installs once (see [Setting up pi](#setting-up-pi)).
+which each user installs once (see [the pi setup guide](.pi/README.md)).
 
 | Category    | Aspect              | Claude Code                       | opencode                                  | pi (subagent extension)               |
 |-------------|---------------------|-----------------------------------|-------------------------------------------|---------------------------------------|
@@ -137,51 +142,26 @@ happens. The events and how you write the code differ.
 
 Claude Code has the most events and is the only one configured declaratively in `settings.json`. opencode and pi
 hook in through code, which is why this repo keeps the rules in shell scripts and lets the opencode plugin
-and the pi extension call them.
+and the pi extension call them. pi keeps its script copy in `.pi/hooks/`.
 
 ## Adopting the setup
 
-1. Copy the files for the tools you use into the root of your repo. `AGENTS.md`, `docs/`, `.claude/hooks/` and
-   `.claude/skills/` are shared by all three.
+1. Copy the files for the tools you use into the root of your repo. All tools need `AGENTS.md` and `docs/`.
+   Claude Code and opencode also use `.claude/hooks/` and `.claude/skills/`. For pi, copy `.pi/` instead; it
+   includes its own hooks and skills. See [the pi setup guide](.pi/README.md).
 2. Fill in the Project Overview in `AGENTS.md`, and `docs/glossary.md` and `docs/architecture.md` for your project.
    Keep `AGENTS.md` short: mention the docs where they are needed instead of copying their content.
 3. Adjust the rest of `AGENTS.md` to your project's hard stops and conventions. Put anything that only applies to
    Claude Code in `CLAUDE.md`.
-4. Review the safety gate. Extend the block lists in `.claude/hooks/safety-gate.sh` to match your stack; it needs
-   `jq`. The opencode plugin and the pi extension call the same script, so changes apply to all tools.
+4. Review the safety gate. Extend the block lists in `.claude/hooks/safety-gate.sh` (Claude Code/opencode) or
+   `.pi/hooks/safety-gate.sh` (pi) to match your stack; it needs Bash and `jq`. When maintaining both copies,
+   apply shared rule changes to both.
 5. For Claude Code, copy `.claude/settings.local.json.example` to `.claude/settings.local.json` and tailor the
    allowlist. The local file is personal and stays out of version control.
 6. Keep only the skills, agents and commands you will actually use, and tune their descriptions so they trigger
    when you expect them to. If you change an agent, update its Claude Code, opencode and pi version.
-7. For pi, follow [Setting up pi](#setting-up-pi).
-
-### Setting up pi
-
-pi ([`@earendil-works/pi-coding-agent`](https://pi.dev))
-has no built-in subagents and no MCP, and it hooks in through TypeScript extensions.
-
-- **Trust the project.** pi loads `.pi/` (settings, extensions, prompt templates) only after you trust the project.
-  Until then the safety gate is not active and the shared skills are not found. `AGENTS.md` is loaded either way.
-- **Install the subagent extension** once per machine. It is pi's
-  [subagent example](https://github.com/earendil-works/pi/tree/v1.4.0/packages/coding-agent/examples/extensions/subagent)
-  and not part of this repo. It adds a `subagent` tool that runs the agents in `.pi/agents/` in their own pi process:
-
-  ```bash
-  mkdir -p ~/.pi/agent/extensions/subagent
-  cd ~/.pi/agent/extensions/subagent
-  for f in index.ts agents.ts; do
-    curl -fsSLO https://raw.githubusercontent.com/earendil-works/pi/v1.4.0/packages/coding-agent/examples/extensions/subagent/$f
-  done
-  ```
-
-  Use the tag of your pi version (`pi --version`), then restart pi or run `/reload`.
-- **Ask for project agents explicitly.** The extension loads `.pi/agents/` only when the call passes
-  `agentScope: "both"`. `/review` does this; for other delegations, say so ("use the planner subagent with
-  agentScope both").
-- **Models:** the pi agents name `claude-opus-5-5` and `claude-sonnet-5-5`. Change `model:` for other providers or
-  remove it to use the session's model.
-- **Known gaps:** pi also reads `CLAUDE.md`, so `AGENTS.md` may load twice. Commands you run yourself with `!` do
-  not pass the safety gate.
+7. For pi, follow [the setup guide in `.pi/README.md`](.pi/README.md). It covers copying the files, prerequisites,
+   project trust, the subagent extension and a quick setup check.
 
 ## Useful resources
 
@@ -220,7 +200,7 @@ Template for new entries (check the link before adding it):
 - **[pi subagent extension (example)](https://github.com/earendil-works/pi/blob/main/packages/coding-agent/examples/extensions/subagent/agents.ts)**
   — an example extension that adds subagents to pi: agents are Markdown files with `name`, `description`, `tools`
   and `model`, each run in its own pi process, and only the final answer returns. Supports single, parallel and
-  chained runs. Not built in; [Setting up pi](#setting-up-pi) shows how to install it. `mcpServers`, agent memory
+  chained runs. Not built in; [the pi setup guide](.pi/README.md) shows how to install it. `mcpServers`, agent memory
   and background runs have no equivalent.
 
 ## Not committed

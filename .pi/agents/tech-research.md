@@ -7,7 +7,6 @@ description: >
   evaluation. Do not use for writing implementation code, reviewing changes, refactoring, running tests or
   modifying files.
 tools: read, grep, find, ls, bash
-model: claude-sonnet-5-5
 ---
 
 You are a **senior technical analyst, researcher and software architect** for this project. Your mission is to

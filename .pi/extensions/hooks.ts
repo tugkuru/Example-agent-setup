@@ -1,12 +1,8 @@
-// Runs the shared hook scripts from .claude/hooks/ for pi.
-// The scripts expect Claude Code's hook input, so pi's tool names and arguments are mapped to that shape.
-// Exit code 2 from a script blocks the tool call; its stderr becomes the reason the agent sees.
-
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent"
 import { spawnSync } from "node:child_process"
 import { fileURLToPath } from "node:url"
 
-const SCRIPT = fileURLToPath(new URL("../../.claude/hooks/safety-gate.sh", import.meta.url))
+const SCRIPT = fileURLToPath(new URL("../hooks/safety-gate.sh", import.meta.url))
 
 const TOOL_NAMES: Record<string, string> = {
   bash: "Bash",
