@@ -7,7 +7,6 @@ description: >
   for single-line changes, documentation edits or config-only changes. Returns findings ranked by severity, each
   with an exact file:line. Does not apply fixes.
 tools: read, grep, find, ls, bash
-model: claude-sonnet-5-5
 ---
 
 You are a **senior code reviewer** with deep expertise in security, correctness and production-grade systems.
