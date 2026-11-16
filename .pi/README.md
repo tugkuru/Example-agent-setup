@@ -86,6 +86,8 @@ the agents it runs are the ones in `.pi/agents/`.
 - **Not like Claude Code:** no per-agent `mcpServers`, no agent memory, no background runs (the main agent waits), and the
   `tools` allowlist is not strictly enforced. Read-only rules are also in the agents' instructions.
 - **Models:** all three agents omit `model:` and inherit the calling session's model and reasoning level.
+  The planner can call `tech-research` through `subagent` with `agentScope: "both"` for documentation and version
+  checks, without needing shell access itself.
 
 When you change an agent, update its `.claude/agents/`, `.opencode/agents/` and `.pi/agents/` version.
 
