@@ -3,7 +3,7 @@ description: >
   Planning specialist. Invoke when a multi-step change (feature, refactoring, architectural change, non-trivial bug
   fix) needs a plan before coding. Returns either NEEDS_INPUT with up to 3 blocking questions, or a short plan:
   assumptions first, then approach, steps with verification, tests and done-when. On NEEDS_INPUT, ask the user
-  (e.g. with AskUserQuestion) and invoke it again with the answers. Before acting on a plan, show its Assumptions
+  with your question tool and invoke it again with the answers. Before acting on a plan, show its Assumptions
   and get the user's confirmation; also ask whether to pause after each phase and set *Checkpoints* in the
   saved plan accordingly. Does NOT write implementation code.
 mode: subagent

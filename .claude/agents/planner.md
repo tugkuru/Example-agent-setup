@@ -85,8 +85,8 @@ At most 3 questions, each answerable with "yes" to accept the recommendation.
 ```markdown
 # Plan: [Feature] ([S|M|L])
 
-## Assumptions (confirm before proceeding)
-- [One line each, at most 5. Prefix "Open:" for a non-blocking question.]
+## Assumptions (confirm before proceeding to implementation)
+- [One line each, "Open:" for a non-blocking question.]
 
 ## Approach
 [1–3 sentences: the recommended approach and why.]
