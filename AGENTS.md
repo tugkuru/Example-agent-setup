@@ -86,7 +86,7 @@ When invoking a subagent, tool, or skill, state which one you used and why you c
 
 When a subagent returns a structured result, relay it **verbatim or with minimal formatting only** — do not
 summarize, reorder, or drop sections. Only add a one-line intro ("Here is the planner output:"). Exception: when a
-subagent returns `NEEDS_INPUT`, ask the user its questions (e.g. with AskUserQuestion) and invoke it again with the
+subagent returns `NEEDS_INPUT`, ask the user its questions with your question tool and invoke it again with the
 answers.
 
 ## Domain Terms

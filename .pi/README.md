@@ -54,7 +54,7 @@ multi-tool example, apply shared rule changes to both copies manually; nothing s
 | Commands     | `.pi/prompts/review.md`                         | `/review [focus]`, `$ARGUMENTS`      | No `agent:` or `subtask:`; the prompt asks the main agent to call the `subagent` tool |
 | Hooks        | `.pi/extensions/hooks.ts` → `safety-gate.sh`    | Same script, exit 2 blocks           | See [Safety gate](#safety-gate)                         |
 | Agents       | `.pi/agents/*.md` + subagent extension (installed per user) | Same instructions, own context, own model, tool allowlist | See [Subagents](#subagents)              |
-| MCP          | Not configured by this setup                    | —                                    | No Context7 configured; the agents fetch docs with `curl` instead |
+| MCP          | Not configured by this setup                    | —                                    | No Context7 configured; agents fetch docs with `curl`, which needs `bash` in their `tools` |
 
 ## Subagents
 
@@ -86,8 +86,6 @@ the agents it runs are the ones in `.pi/agents/`.
 - **Not like Claude Code:** no per-agent `mcpServers`, no agent memory, no background runs (the main agent waits), and the
   `tools` allowlist is not strictly enforced. Read-only rules are also in the agents' instructions.
 - **Models:** all three agents omit `model:` and inherit the calling session's model and reasoning level.
-  The planner can call `tech-research` through `subagent` with `agentScope: "both"` for documentation and version
-  checks, without needing shell access itself.
 
 When you change an agent, update its `.claude/agents/`, `.opencode/agents/` and `.pi/agents/` version.
 
