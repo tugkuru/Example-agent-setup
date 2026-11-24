@@ -6,6 +6,9 @@ template that shows one building block. Nothing here is tied to a specific proje
 
 Use it to see how the pieces fit together, or copy the parts you need into your own repo.
 
+To see what a setup changes in practice, implement the same ticket twice, with and without it, and compare the
+results: [setup-side-by-side-comparison-runs.md](setup-side-by-side-comparison-runs.md).
+
 ## Building blocks
 
 | Block        | What it is                                                                          | When it applies                    | Where                                         |
