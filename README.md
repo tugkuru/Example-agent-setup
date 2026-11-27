@@ -15,7 +15,7 @@ results: [setup-side-by-side-comparison-runs.md](setup-side-by-side-comparison-r
 |--------------|-------------------------------------------------------------------------------------|------------------------------------|-----------------------------------------------|
 | Guidelines   | Project instructions: overview, hard stops, working rules. Keep them short.         | Always, loaded at session start    | `AGENTS.md`, `CLAUDE.md`                      |
 | Context docs | Glossary and architecture, mentioned in `AGENTS.md` instead of imported.            | On demand, when the task needs them | `docs/`                                       |
-| Skills       | Task-specific knowledge. Only the description is loaded up front.                   | When a task matches the description | `.claude/skills/`, `.pi/skills/`             |
+| Skills       | Task-specific knowledge. Only the description is loaded up front.                   | When a task matches the description | `.claude/skills/`, `.opencode/skills/`, `.pi/skills/` |
 | Commands     | Reusable prompts triggered with `/name`, optionally with arguments.                 | When the user types the command    | `.claude/commands/`, `.opencode/commands/`, `.pi/prompts/` |
 | Hooks        | Scripts that run before or after tool calls, no matter what the model decides.      | On every matching tool call        | `.claude/hooks/`, `.pi/hooks/` + per-tool wiring |
 | Agents       | Subagents with their own context, model and tools. They return only the result.     | When work is delegated to them     | `.claude/agents/`, `.opencode/agents/`, `.pi/agents/` |
@@ -42,7 +42,7 @@ results: [setup-side-by-side-comparison-runs.md](setup-side-by-side-comparison-r
 │   ├── settings.local.json.example   # Claude Code: sample personal permission allowlist
 │   ├── hooks/
 │   │   └── safety-gate.sh            # Before tool call: blocks dangerous commands and secret access
-│   ├── skills/                       # Skills for Claude Code and opencode
+│   ├── skills/                       # Skills for Claude Code
 │   │   ├── test-generation-skill/    # Test-writing rules, loaded when the task matches
 │   │   ├── grilling/                 # Stress-tests a plan or idea in rounds of questions
 │   │   ├── code-walkthrough/         # Walks through code file by file, narrated or Socratic
@@ -56,6 +56,7 @@ results: [setup-side-by-side-comparison-runs.md](setup-side-by-side-comparison-r
 ├── .opencode/
 │   ├── plugins/
 │   │   └── hooks.ts                  # Runs the shared safety gate for opencode
+│   ├── skills/                       # Copies of the four skills
 │   ├── agents/                       # opencode versions of the three subagents
 │   └── commands/
 │       ├── review.md                 # /review [focus] launches the code-reviewer
@@ -81,14 +82,16 @@ results: [setup-side-by-side-comparison-runs.md](setup-side-by-side-comparison-r
 
 ## Tool support
 
-Claude Code and opencode share hooks and skills. pi deliberately includes its own copies so `.pi/` can be
-adopted without the other tool folders. Shared rule changes must be applied to both copies manually.
+Claude Code and opencode share the hook script. Each tool keeps its own copy of the skills, and pi also its own
+hook script, so every tool folder shows what that tool uses. Changes to a skill or a shared rule must be applied
+to all copies manually. opencode also reads `.claude/skills/`; set `OPENCODE_DISABLE_CLAUDE_CODE_SKILLS=1` so it
+loads only `.opencode/skills/` and does not see each skill twice.
 
 | Block        | Claude Code                         | opencode                          | pi                                     |
 |--------------|-------------------------------------|-----------------------------------|----------------------------------------|
 | Guidelines   | `CLAUDE.md` → `@AGENTS.md`          | `AGENTS.md`                       | `AGENTS.md`                            |
 | Context docs | mentioned in `AGENTS.md`            | mentioned in `AGENTS.md`          | mentioned in `AGENTS.md`               |
-| Skills       | `.claude/skills/`                   | `.claude/skills/` (native)        | `.pi/skills/` (native)                 |
+| Skills       | `.claude/skills/`                   | `.opencode/skills/` (native)      | `.pi/skills/` (native)                 |
 | Commands     | `.claude/commands/`                 | `.opencode/commands/`             | `.pi/prompts/`                         |
 | Hooks        | `.claude/settings.json` → scripts   | `.opencode/plugins/` → scripts    | `.pi/extensions/hooks.ts` → `.pi/hooks/` |
 | Agents       | `.claude/agents/`                   | `.opencode/agents/`               | `.pi/agents/` + subagent extension     |
@@ -150,7 +153,7 @@ and the pi extension call them. pi keeps its script copy in `.pi/hooks/`.
 ## Adopting the setup
 
 1. Copy the files for the tools you use into the root of your repo. All tools need `AGENTS.md` and `docs/`.
-   Claude Code and opencode also use `.claude/hooks/` and `.claude/skills/`. For pi, copy `.pi/` instead; it
+   Claude Code and opencode also use `.claude/hooks/`, plus their own skills folder. For pi, copy `.pi/` instead; it
    includes its own hooks and skills. See [the pi setup guide](.pi/README.md).
 2. Fill in the Project Overview in `AGENTS.md`, and `docs/glossary.md` and `docs/architecture.md` for your project.
    Keep `AGENTS.md` short: mention the docs where they are needed instead of copying their content.
@@ -162,7 +165,7 @@ and the pi extension call them. pi keeps its script copy in `.pi/hooks/`.
 5. For Claude Code, copy `.claude/settings.local.json.example` to `.claude/settings.local.json` and tailor the
    allowlist. The local file is personal and stays out of version control.
 6. Keep only the skills, agents and commands you will actually use, and tune their descriptions so they trigger
-   when you expect them to. If you change an agent, update its Claude Code, opencode and pi version.
+   when you expect them to. If you change a skill or an agent, update its Claude Code, opencode and pi version.
 7. For pi, follow [the setup guide in `.pi/README.md`](.pi/README.md). It covers copying the files, prerequisites,
    project trust, the subagent extension and a quick setup check.
 
